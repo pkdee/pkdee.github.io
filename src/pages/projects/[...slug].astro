@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import { render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import ProjectHeader from '../../components/project/ProjectHeader.astro';
+import { getPublishedPosts, summarizeTags } from '../../lib/posts';
+import { getPublishedProjects } from '../../lib/projects';
+
+// 공개 프로젝트만 상세 주소를 만든다. 초안은 운영 빌드에서 빠진다(ARCHITECTURE.md #6.5).
+export const getStaticPaths = (async () => {
+  const projects = await getPublishedProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { project } = Astro.props as Props;
+const { Content, headings } = await render(project);
+const linkedTags = new Set<string>(summarizeTags(await getPublishedPosts()).map((tag) => tag.name));
+---
+
+<ArticleLayout title={project.data.title} description={project.data.summary} headings={headings}>
+  <ProjectHeader slot="header" project={project} linkedTags={linkedTags} />
+  <Content />
+</ArticleLayout>

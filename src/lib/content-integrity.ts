@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 // 항목 사이의 중복 검사(ARCHITECTURE.md #6.4). Zod 스키마는 항목을 하나씩만 보고,
@@ -23,6 +23,7 @@ function frontmatterValues(source: string): Partial<Record<UniqueField, string>>
 
 /** dir 아래 .mdx 파일의 slug, contentId가 겹치면 두 파일 경로를 담아 예외를 던진다. */
 export function assertUniqueEntries(dir: string): void {
+  if (!existsSync(dir)) return;
   const files = readdirSync(dir, { recursive: true, encoding: 'utf8' }).filter((file) =>
     file.endsWith('.mdx'),
   );

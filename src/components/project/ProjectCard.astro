@@ -1,0 +1,38 @@
+---
+import TagChip from '../blog/TagChip.astro';
+import { formatPeriod, projectUrl, type Project } from '../../lib/projects';
+
+interface Props {
+  project: Project;
+  /** 공개 글이 있어 태그 페이지가 있는 태그 이름 */
+  linkedTags: ReadonlySet<string>;
+}
+
+const { project, linkedTags } = Astro.props;
+const { title, summary, role, stack } = project.data;
+
+// 프로젝트 목록 카드(DESIGN.md #8.7, Figma ProjectCard). 제목이 상세로 가는 링크이고,
+// 스택 칩은 태그 페이지 링크라서 카드 전체를 링크로 넓히지 않는다.
+---
+
+<article class="flex flex-col gap-sm rounded-md border border-border bg-surface-raised p-lg break-keep">
+  <p class="flex flex-wrap gap-x-sm text-body-sm text-muted">
+    <span>{formatPeriod(project.data)}</span>
+    <span>{role}</span>
+  </p>
+  <h2 class="text-heading-md text-text">
+    <a href={projectUrl(project)} class="hover:text-primary">{title}</a>
+  </h2>
+  <p class="text-body text-muted">{summary}</p>
+  {
+    stack.length > 0 && (
+      <ul class="flex flex-wrap gap-xs" aria-label="기술 스택">
+        {stack.map((name) => (
+          <li>
+            <TagChip name={name} link={linkedTags.has(name)} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</article>

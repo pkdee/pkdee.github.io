@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/project/ProjectCard.astro';
+import { getPublishedPosts, summarizeTags } from '../../lib/posts';
+import { getPublishedProjects } from '../../lib/projects';
+import { SITE } from '../../lib/site';
+
+// 프로젝트 목록(DESIGN.md #5.7, Figma 04 Projects). 데스크톱은 두 열 카드이다.
+const projects = await getPublishedProjects();
+const linkedTags = new Set<string>(summarizeTags(await getPublishedPosts()).map((tag) => tag.name));
+---
+
+<BaseLayout title="Projects" description={SITE.projectsDescription}>
+  <div class="px-(--layout-gutter) pt-lg pb-xxxl md:pt-xxl">
+    <div class="mx-auto flex max-w-site flex-col gap-lg md:gap-xl">
+      <div class="flex flex-col gap-xs break-keep">
+        <h1 lang="en" class="text-heading-lg text-text md:text-heading-xl">Projects</h1>
+        <p class="text-body text-muted">{SITE.projectsDescription}</p>
+      </div>
+      {
+        projects.length > 0 ? (
+          <ul class="grid items-start gap-lg md:grid-cols-2">
+            {projects.map((project) => (
+              <li>
+                <ProjectCard project={project} linkedTags={linkedTags} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-body text-muted">아직 공개한 프로젝트가 없습니다.</p>
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>

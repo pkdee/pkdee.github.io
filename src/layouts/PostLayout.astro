@@ -1,12 +1,9 @@
 ---
 import type { MarkdownHeading } from 'astro';
 import { getImage } from 'astro:assets';
-import BaseLayout from './BaseLayout.astro';
-// global.css(BaseLayout) 다음에 불러와야 CSS 레이어 순서가 Tailwind와 같아진다.
-import '../styles/prose.css';
+import ArticleLayout from './ArticleLayout.astro';
 import ArticleHeader from '../components/blog/ArticleHeader.astro';
-import TableOfContents from '../components/blog/TableOfContents.astro';
-import { tocHeadings, type BlogPost } from '../lib/posts';
+import type { BlogPost } from '../lib/posts';
 
 interface Props {
   post: BlogPost;
@@ -15,7 +12,6 @@ interface Props {
 
 const { post, headings } = Astro.props;
 const { title, description, pubDate, updatedDate, tags, cover, coverAlt, canonicalUrl } = post.data;
-const toc = tocHeadings(headings);
 // 공유 미리보기 이미지는 대표 이미지가 있을 때만 쓴다. 폭 1200px PNG로 만든다.
 // 기본 형식인 WebP를 읽지 못하는 미리보기 서비스가 있을 수 있어 투명도도 지키는 PNG를 쓴다.
 const ogImage = cover
@@ -25,114 +21,24 @@ const ogImage = cover
     }
   : undefined;
 
-// 게시물 상세(DESIGN.md #5.5, #8.3). 데스크톱(1024px 이상)은 본문 오른쪽에 목차를 두고,
-// 그보다 좁으면 본문 위에 접이식 목차를 둔다.
+// 게시물 상세(DESIGN.md #5.5, #8.3)
 ---
 
-<BaseLayout
+<ArticleLayout
   title={title}
   description={description}
   canonicalUrl={canonicalUrl}
   article={{ publishedTime: pubDate, modifiedTime: updatedDate, tags }}
   image={ogImage}
+  headings={headings}
 >
-  <div class="px-(--layout-gutter) pt-lg pb-xxxl md:pt-xxl">
-    <div class="mx-auto flex max-w-[calc(var(--container-article)+var(--spacing-xxl)+15rem)] justify-center gap-xxl">
-      <article class="flex max-w-article min-w-0 flex-1 flex-col gap-xl">
-        <ArticleHeader
-          title={title}
-          description={description}
-          pubDate={pubDate}
-          updatedDate={updatedDate}
-          tags={tags}
-        />
-        <hr class="border-border" />
-        {
-          toc.length > 0 && (
-            <div class="lg:hidden">
-              <TableOfContents headings={toc} variant="collapsible" />
-            </div>
-          )
-        }
-        <div class="prose">
-          <slot />
-        </div>
-      </article>
-      {
-        toc.length > 0 && (
-          <aside class="hidden w-60 shrink-0 pt-xxl lg:block">
-            <div class="sticky top-lg max-h-[calc(100dvh-2*var(--spacing-lg))] overflow-y-auto">
-              <TableOfContents headings={toc} variant="sidebar" />
-            </div>
-          </aside>
-        )
-      }
-    </div>
-  </div>
-</BaseLayout>
-
-<script>
-  // 코드 복사(DESIGN.md #8.5). 클립보드를 쓸 수 없으면 버튼을 숨긴 채로 둔다.
-  if (navigator.clipboard) {
-    for (const button of document.querySelectorAll<HTMLButtonElement>('.code-block-copy')) {
-      const label = button.querySelector('.code-block-copy-label');
-      const code = button.closest('.code-block')?.querySelector('pre code');
-      if (!label || !code) continue;
-
-      button.hidden = false;
-      let resetTimer: number | undefined;
-      button.addEventListener('click', async () => {
-        // 브라우저가 클립보드 권한을 막으면 실패를 글자로 알린다.
-        try {
-          await navigator.clipboard.writeText(code.textContent ?? '');
-          button.dataset.copied = '';
-          label.textContent = '복사됨';
-        } catch {
-          label.textContent = '복사 실패';
-        }
-        window.clearTimeout(resetTimer);
-        resetTimer = window.setTimeout(() => {
-          delete button.dataset.copied;
-          label.textContent = '복사';
-        }, 2000);
-      });
-    }
-  }
-
-  // 목차의 현재 섹션 표시(DESIGN.md #8.4). 화면 위쪽을 지난 마지막 제목을 현재 섹션으로 본다.
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
-  const slugs = [...new Set(links.map((link) => link.dataset.tocLink ?? ''))];
-  const headings = slugs
-    .map((slug) => document.getElementById(slug))
-    .filter((heading): heading is HTMLElement => heading !== null);
-
-  if (headings.length > 0) {
-    const threshold = 120;
-    let current: string | undefined;
-    let ticking = false;
-
-    const update = () => {
-      ticking = false;
-      const passed = headings.filter((heading) => heading.getBoundingClientRect().top <= threshold);
-      const next = passed.at(-1)?.id;
-      if (next === current) return;
-      current = next;
-      for (const link of links) {
-        if (link.dataset.tocLink === current) link.setAttribute('aria-current', 'location');
-        else link.removeAttribute('aria-current');
-      }
-    };
-
-    update();
-    window.addEventListener(
-      'scroll',
-      () => {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(update);
-        }
-      },
-      { passive: true },
-    );
-  }
-</script>
+  <ArticleHeader
+    slot="header"
+    title={title}
+    description={description}
+    pubDate={pubDate}
+    updatedDate={updatedDate}
+    tags={tags}
+  />
+  <slot />
+</ArticleLayout>

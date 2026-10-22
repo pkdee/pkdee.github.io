@@ -6,17 +6,23 @@ interface Props {
   name: string;
   /** 글 수. 태그 목록 페이지(/tags/)에서만 쓴다. */
   count?: number;
+  /** false면 링크 없이 보여 준다. 공개 글이 없어 태그 페이지가 없을 때 쓴다. */
+  link?: boolean;
 }
 
-const { name, count } = Astro.props;
+const { name, count, link = true } = Astro.props;
+const Element = link ? 'a' : 'span';
 
 // 태그 칩(DESIGN.md #8.6). 태그 페이지로 가는 링크이고 칩에는 브랜드 색을 쓰지 않는다.
 ---
 
-<a
-  href={tagUrl(name)}
+<Element
+  href={link ? tagUrl(name) : undefined}
   lang="en"
-  class="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface px-sm py-xxs text-label whitespace-nowrap text-muted hover:text-primary focus-visible:-outline-offset-2"
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface px-sm py-xxs text-label whitespace-nowrap text-muted',
+    link && 'hover:text-primary focus-visible:-outline-offset-2',
+  ]}
 >
   <TagIcon name={name} size={14} variant="mono" />
   {name}
@@ -29,4 +35,4 @@ const { name, count } = Astro.props;
       </span>
     )
   }
-</a>
+</Element>

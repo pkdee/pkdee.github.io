@@ -1,0 +1,59 @@
+---
+import ExternalLinkIcon from '../../assets/icons/external-link-primary.svg';
+import TagChip from '../blog/TagChip.astro';
+import { formatPeriod, statusLabel, type Project } from '../../lib/projects';
+
+interface Props {
+  project: Project;
+  /** 공개 글이 있어 태그 페이지가 있는 태그 이름 */
+  linkedTags: ReadonlySet<string>;
+}
+
+const { project, linkedTags } = Astro.props;
+const { title, summary, role, status, stack, githubUrl, serviceUrl } = project.data;
+const links = [
+  { label: 'GitHub', href: githubUrl },
+  { label: '서비스', href: serviceUrl },
+].filter((link): link is { label: string; href: string } => Boolean(link.href));
+
+// 프로젝트 상세 머리: 제목, 요약, 기간·역할·상태, 링크, 기술 스택(ARCHITECTURE.md #6.6).
+// Figma에 상세 시안이 없어 글 머리(DESIGN.md #8.3)와 같은 크기와 간격을 쓴다.
+---
+
+<header class="flex flex-col gap-sm break-keep">
+  <h1 class="text-heading-xl text-text">{title}</h1>
+  <p class="text-body text-muted">{summary}</p>
+  <dl class="flex flex-wrap gap-x-lg gap-y-xxs text-body-sm text-muted">
+    <div class="flex gap-xs"><dt>기간</dt><dd class="text-text">{formatPeriod(project.data)}</dd></div>
+    <div class="flex gap-xs"><dt>역할</dt><dd class="text-text">{role}</dd></div>
+    <div class="flex gap-xs"><dt>상태</dt><dd class="text-text">{statusLabel(status)}</dd></div>
+  </dl>
+  {
+    links.length > 0 && (
+      <ul class="flex flex-wrap gap-x-lg gap-y-xxs">
+        {links.map((link) => (
+          <li>
+            <a href={link.href} class="flex items-center gap-xxs text-label text-primary underline">
+              {link.label}
+              <span aria-hidden="true">
+                <ExternalLinkIcon />
+              </span>
+              <span class="sr-only">(외부 사이트)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {
+    stack.length > 0 && (
+      <ul class="flex flex-wrap gap-xs" aria-label="기술 스택">
+        {stack.map((name) => (
+          <li>
+            <TagChip name={name} link={linkedTags.has(name)} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</header>
