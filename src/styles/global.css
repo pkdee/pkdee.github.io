@@ -3,6 +3,18 @@
 @import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 
 /*
+ * D2Coding 공식 woff2(naver/d2-coding-font VER1.4.0, 고치지 않은 원본). 코드는 400 굵기만 쓴다(DESIGN.md #4.1).
+ * 브라우저는 코드 글자가 화면에 있을 때만 받는다. 라이선스는 /licenses/D2Coding-OFL.txt이다.
+ */
+@font-face {
+  font-family: D2Coding;
+  src: url("../assets/fonts/D2Coding-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
  * 디자인 토큰. 값의 기준은 DESIGN.md 머리말(colors, typography, spacing, rounded)이다.
  * Tailwind 기본 색과 글자 크기는 지우고 이 토큰만 유틸리티로 만든다(bg-surface, text-muted, text-body-sm 등).
  */
