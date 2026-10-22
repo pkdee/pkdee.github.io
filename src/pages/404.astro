@@ -1,0 +1,21 @@
+---
+import ArrowRightIcon from '../assets/icons/arrow-right.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// 404(DESIGN.md #5.7). GitHub Pages가 없는 경로에 dist/404.html을 보여 준다(TECH.md #7.3).
+// 홈으로 가기는 리디렉트를 거치지 않도록 /blog/를 직접 가리킨다(ARCHITECTURE.md #3.1).
+---
+
+<BaseLayout title="페이지를 찾을 수 없습니다" description="주소가 바뀌었거나 삭제된 페이지입니다.">
+  <div class="px-(--layout-gutter) py-xxxl">
+    <div class="mx-auto flex max-w-article flex-col gap-md break-keep">
+      <p class="text-label text-muted">404</p>
+      <h1 class="text-heading-lg text-text md:text-heading-xl">페이지를 찾을 수 없습니다</h1>
+      <p class="text-body text-muted">주소가 바뀌었거나 삭제된 페이지입니다.</p>
+      <a href="/blog/" class="flex items-center gap-xxs self-start text-label text-primary underline">
+        홈으로 가기
+        <span aria-hidden="true"><ArrowRightIcon /></span>
+      </a>
+    </div>
+  </div>
+</BaseLayout>
