@@ -1,3 +1,4 @@
+import type { MarkdownHeading } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type BlogPost = CollectionEntry<'blog'>;
@@ -15,6 +16,13 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
 
 export function postUrl(post: BlogPost): string {
   return `/blog/${post.id}/`;
+}
+
+/** 목차에 넣을 제목(h2, h3). 각주 제목은 뺀다(TECH.md #6.5). */
+export function tocHeadings(headings: MarkdownHeading[]): MarkdownHeading[] {
+  return headings.filter(
+    (heading) => (heading.depth === 2 || heading.depth === 3) && heading.slug !== 'footnote-label',
+  );
 }
 
 const dateFormatter = new Intl.DateTimeFormat('ko-KR', {

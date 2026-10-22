@@ -9,6 +9,8 @@ import keystatic from '@keystatic/astro';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import { codeBlockFrame } from './src/lib/shiki-code-block.ts';
+
 // Keystatic 관리 UI는 `npm run cms`(KEYSTATIC=true)일 때만 켠다.
 // 서버 라우트를 추가하므로 운영 빌드에 넣으면 어댑터가 없어 빌드가 실패한다.
 const cms = process.env.KEYSTATIC === 'true';
@@ -27,6 +29,15 @@ export default defineConfig({
   prerenderConflictBehavior: 'error',
 
   integrations: [react(), mdx(), ...(cms ? [keystatic()] : [])],
+
+  // 코드 블록은 라이트 테마 하나로 그리고 macOS 창 모양으로 감싼다(DESIGN.md #3.5, #8.5).
+  // github-light-default는 Figma 시안의 구문 색과 같다.
+  markdown: {
+    shikiConfig: {
+      theme: 'github-light-default',
+      transformers: [codeBlockFrame()],
+    },
+  },
 
   vite: {
     plugins: [tailwindcss()]

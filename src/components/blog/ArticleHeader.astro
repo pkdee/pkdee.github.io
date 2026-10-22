@@ -1,0 +1,47 @@
+---
+import CalendarIcon from '../../assets/icons/calendar.svg';
+import TagChip from './TagChip.astro';
+import { formatDate, isoDate } from '../../lib/posts';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date | undefined;
+  tags: readonly string[];
+}
+
+const { title, description, pubDate, updatedDate, tags } = Astro.props;
+
+// 글 머리: 제목, 설명, 날짜(게시일, 수정일), 태그 순서(DESIGN.md #8.3)
+---
+
+<header class="flex flex-col gap-sm break-keep">
+  <h1 class="text-heading-xl text-text">{title}</h1>
+  <p class="text-body text-muted">{description}</p>
+  <p class="flex items-center gap-xs text-body-sm text-muted">
+    <span aria-hidden="true"><CalendarIcon /></span>
+    <span>
+      <time datetime={isoDate(pubDate)}>{formatDate(pubDate)}</time> 게시
+      {
+        updatedDate && (
+          <>
+            {' · '}
+            <time datetime={isoDate(updatedDate)}>{formatDate(updatedDate)}</time> 수정
+          </>
+        )
+      }
+    </span>
+  </p>
+  {
+    tags.length > 0 && (
+      <ul class="flex flex-wrap gap-xs" aria-label="태그">
+        {tags.map((tag) => (
+          <li>
+            <TagChip name={tag} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</header>

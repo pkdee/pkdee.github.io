@@ -1,0 +1,70 @@
+---
+import type { MarkdownHeading } from 'astro';
+import ListIcon from '../../assets/icons/list.svg';
+import ChevronDown from '../../assets/icons/chevron-down.svg';
+import ChevronUp from '../../assets/icons/chevron-up.svg';
+
+interface Props {
+  headings: MarkdownHeading[];
+  /** sidebar: 데스크톱 본문 오른쪽, collapsible: 모바일과 태블릿 본문 위 접이식 */
+  variant: 'sidebar' | 'collapsible';
+}
+
+const { headings, variant } = Astro.props;
+
+// 목차(DESIGN.md #8.4). 현재 섹션 표시는 PostLayout의 스크립트가 aria-current="location"을 붙여서 한다.
+// 레일 색, 글자 굵기, 글자색을 함께 바꿔 색에만 의존하지 않는다.
+const itemClass =
+  'block border-l-2 border-border py-xxs pr-xs text-body-sm break-keep text-muted hover:text-text aria-[current=location]:border-primary aria-[current=location]:text-label aria-[current=location]:text-text';
+---
+
+{
+  variant === 'sidebar' ? (
+    <nav aria-label="목차" class="flex flex-col gap-xs">
+      <p class="text-label text-text">목차</p>
+      <ul>
+        {headings.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class:list={[itemClass, heading.depth === 3 ? 'pl-lg' : 'pl-sm']}
+              data-toc-link={heading.slug}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  ) : (
+    <details class="group rounded-md border border-border bg-surface">
+      <summary class="flex cursor-pointer list-none items-center gap-xs px-md py-sm text-label text-text [&::-webkit-details-marker]:hidden">
+        <span aria-hidden="true">
+          <ListIcon />
+        </span>
+        <span class="flex-1">목차</span>
+        <span aria-hidden="true" class="group-open:hidden">
+          <ChevronDown />
+        </span>
+        <span aria-hidden="true" class="hidden group-open:block">
+          <ChevronUp />
+        </span>
+      </summary>
+      <nav aria-label="목차" class="px-md pt-xxs pb-md">
+        <ul>
+          {headings.map((heading) => (
+            <li>
+              <a
+                href={`#${heading.slug}`}
+                class:list={[itemClass, heading.depth === 3 ? 'pl-lg' : 'pl-sm']}
+                data-toc-link={heading.slug}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </details>
+  )
+}

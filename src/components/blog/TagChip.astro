@@ -1,0 +1,19 @@
+---
+import HashIcon from '../../assets/icons/hash.svg';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+
+// 태그 칩(DESIGN.md #8.6). 태그 페이지와 태그 목록(로고)을 만들 때(ARCHITECTURE.md #11.1의 9단계)
+// /tags/<slug>/ 링크와 로고 Mono 아이콘으로 바꾼다. 지금은 링크가 없고 아이콘은 #이다.
+---
+
+<span
+  class="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface px-sm py-xxs text-label text-muted"
+>
+  <span aria-hidden="true"><HashIcon width={14} height={14} /></span>
+  {name}
+</span>
