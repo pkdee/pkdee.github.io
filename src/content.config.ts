@@ -35,6 +35,13 @@ const blog = defineCollection({
         cover: image().optional(),
         coverAlt: z.string().min(1).optional(),
         canonicalUrl: z.url({ protocol: /^https?$/ }).optional(),
+        // 시리즈 이름(ARCHITECTURE.md #3.1, #6.3). v1은 메타데이터로만 두고 화면과 라우트는 아직 없다.
+        // Keystatic은 빈 칸을 빈 문자열로 저장하므로 값 없음으로 바꾼다.
+        series: z
+          .string()
+          .trim()
+          .optional()
+          .transform((value) => value || undefined),
         authorId: z.string().min(1).optional(),
         contentId: z.string().min(1).optional(),
       })

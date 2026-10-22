@@ -87,6 +87,66 @@
     color: var(--color-muted);
   }
 
+  /*
+   * 알림 상자(DESIGN.md #8.13, Figma Callout). src/lib/callout.ts가 > [!NOTE] 인용을 바꾼 결과이다.
+   * 막대, 아이콘, 제목만 종류 색이고 배경은 본문 배경을 그대로 쓴다. 아이콘은 글자색을 따른다.
+   */
+  .prose .callout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    border-left: 4px solid var(--callout-color);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+  }
+
+  .prose .callout > * {
+    margin: 0;
+  }
+
+  .prose .callout-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--callout-color);
+    font-size: var(--text-label);
+    font-weight: var(--text-label--font-weight);
+    line-height: var(--text-label--line-height);
+  }
+
+  .prose .callout-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    background-color: currentColor;
+    mask: var(--callout-icon) center / contain no-repeat;
+  }
+
+  .prose .callout-note {
+    --callout-color: var(--color-callout-note);
+    --callout-icon: url("../assets/icons/info.svg");
+  }
+
+  .prose .callout-tip {
+    --callout-color: var(--color-callout-tip);
+    --callout-icon: url("../assets/icons/lightbulb.svg");
+  }
+
+  .prose .callout-important {
+    --callout-color: var(--color-callout-important);
+    --callout-icon: url("../assets/icons/message-alert.svg");
+  }
+
+  .prose .callout-warning {
+    --callout-color: var(--color-callout-warning);
+    --callout-icon: url("../assets/icons/triangle-alert.svg");
+  }
+
+  .prose .callout-caution {
+    --callout-color: var(--color-callout-caution);
+    --callout-icon: url("../assets/icons/octagon-alert.svg");
+  }
+
   .prose hr {
     border-color: var(--color-border);
   }

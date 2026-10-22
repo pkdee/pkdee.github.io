@@ -78,6 +78,10 @@ export default config({
           label: 'canonical URL',
           description: '다른 곳에 먼저 발행한 글일 때만 씁니다.',
         }),
+        series: fields.text({
+          label: '시리즈',
+          description: '연재 글이면 시리즈 이름을 씁니다. 같은 시리즈는 이름을 똑같이 씁니다.',
+        }),
         authorId: fields.text({ label: '작성자 ID' }),
         contentId: fields.text({ label: '콘텐츠 ID' }),
         content: fields.mdx({
