@@ -5,8 +5,7 @@ export const SITE = {
   author: '저자 이름',
   description: '공부하며 정리한 내용을 기록한다.',
   // 정하지 않았거나 아직 없는 링크는 undefined로 둔다. 그러면 푸터에 나오지 않는다.
-  // RSS는 피드를 만들 때(ARCHITECTURE.md #11.1의 11단계) '/rss.xml'로 바꾼다.
-  rssPath: undefined as string | undefined,
+  rssPath: '/rss.xml' as string | undefined,
   githubUrl: undefined as string | undefined,
 } as const;
 

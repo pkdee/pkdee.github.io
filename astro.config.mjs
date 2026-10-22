@@ -5,6 +5,8 @@ import react from '@astrojs/react';
 
 import mdx from '@astrojs/mdx';
 
+import sitemap from '@astrojs/sitemap';
+
 import keystatic from '@keystatic/astro';
 
 import tailwindcss from '@tailwindcss/vite';
@@ -28,7 +30,8 @@ export default defineConfig({
   // 두 라우트가 같은 주소를 만들면 경고 대신 빌드를 실패시킨다(ARCHITECTURE.md #3.2).
   prerenderConflictBehavior: 'error',
 
-  integrations: [react(), mdx(), ...(cms ? [keystatic()] : [])],
+  // Sitemap은 빌드한 페이지만 담으므로 초안은 빠진다(TECH.md #6.7).
+  integrations: [react(), mdx(), sitemap(), ...(cms ? [keystatic()] : [])],
 
   // 코드 블록은 라이트 테마 하나로 그리고 macOS 창 모양으로 감싼다(DESIGN.md #3.5, #8.5).
   // github-light-default는 Figma 시안의 구문 색과 같다.

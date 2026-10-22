@@ -2,16 +2,23 @@
 import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import SeoHead, { type ArticleMeta } from '../components/layout/SeoHead.astro';
 import { SITE } from '../lib/site';
 
 interface Props {
   /** 페이지 제목. 사이트 이름은 뒤에 붙인다. */
   title: string;
   description?: string;
+  /** 다른 곳에 먼저 발행한 글의 원문 주소(frontmatter canonicalUrl). 없으면 이 페이지 주소이다. */
+  canonicalUrl?: string | undefined;
+  article?: ArticleMeta | undefined;
+  image?: { url: URL; alt: string } | undefined;
 }
 
-const { title, description = SITE.description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const { title, description = SITE.description, canonicalUrl, article, image } = Astro.props;
+const fullTitle = `${title} | ${SITE.name}`;
+// canonical은 항상 운영 주소(site) 기준이다. dev, preview 주소를 쓰지 않는다(ARCHITECTURE.md #8.3).
+const canonical = canonicalUrl ? new URL(canonicalUrl) : new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -20,9 +27,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
-    <title>{`${title} | ${SITE.name}`}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    <title>{fullTitle}</title>
+    <SeoHead
+      title={fullTitle}
+      description={description}
+      canonical={canonical}
+      article={article}
+      image={image}
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
