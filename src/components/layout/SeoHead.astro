@@ -1,5 +1,6 @@
 ---
 import { SITE } from '../../lib/site';
+import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '../../lib/og-image';
 
 export interface ArticleMeta {
   publishedTime: Date;
@@ -15,12 +16,21 @@ interface Props {
   canonical: URL;
   /** 게시물이면 Open Graph article 정보를 함께 쓴다. */
   article?: ArticleMeta | undefined;
-  /** 대표 이미지 절대 URL. 없으면 og:image를 쓰지 않는다. */
+  /** 대표 이미지 절대 URL. 없으면 기본 공유 이미지(/og/default.png)를 쓴다. */
   image?: { url: URL; alt: string } | undefined;
 }
 
 const { title, description, canonical, article, image } = Astro.props;
 const rssUrl = SITE.rssPath ? new URL(SITE.rssPath, Astro.site) : undefined;
+// 대표 이미지가 없으면 사이트 이름과 설명을 담은 기본 이미지를 쓴다(DESIGN.md #8.16). 크기를 알므로 함께 알린다.
+const shareImage = image
+  ? { ...image, width: undefined, height: undefined }
+  : {
+      url: new URL('/og/default.png', Astro.site),
+      alt: `${SITE.name}: ${SITE.description}`,
+      width: OG_IMAGE_WIDTH,
+      height: OG_IMAGE_HEIGHT,
+    };
 
 // 공통 SEO 메타데이터(TECH.md #8.1). 레이아웃은 이 컴포넌트 하나로 출력한다.
 ---
@@ -34,14 +44,10 @@ const rssUrl = SITE.rssPath ? new URL(SITE.rssPath, Astro.site) : undefined;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
-{
-  image && (
-    <>
-      <meta property="og:image" content={image.url} />
-      <meta property="og:image:alt" content={image.alt} />
-    </>
-  )
-}
+<meta property="og:image" content={shareImage.url} />
+<meta property="og:image:alt" content={shareImage.alt} />
+{shareImage.width && <meta property="og:image:width" content={String(shareImage.width)} />}
+{shareImage.height && <meta property="og:image:height" content={String(shareImage.height)} />}
 {
   article && (
     <>
@@ -56,10 +62,11 @@ const rssUrl = SITE.rssPath ? new URL(SITE.rssPath, Astro.site) : undefined;
   )
 }
 
-<meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-{image && <meta name="twitter:image" content={image.url} />}
+<meta name="twitter:image" content={shareImage.url} />
+<meta name="twitter:image:alt" content={shareImage.alt} />
 
 {rssUrl && <link rel="alternate" type="application/rss+xml" title={SITE.name} href={rssUrl} />}
 <link rel="sitemap" href="/sitemap-index.xml" />
