@@ -1,0 +1,61 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import ArrowLeftIcon from '../../../assets/icons/arrow-left.svg';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostListView from '../../../components/blog/PostListView.astro';
+import TagIcon from '../../../components/blog/TagIcon.astro';
+import {
+  byPopularity,
+  getPublishedPosts,
+  postsWithTag,
+  POSTS_PER_PAGE,
+  summarizeTags,
+} from '../../../lib/posts';
+import { tagSlug } from '../../../lib/tags';
+
+// 태그 페이지. [...page]는 rest 매개변수라 1페이지가 /tags/<slug>/이다(TECH.md #6.9).
+// 공개 글이 없는 태그는 페이지를 만들지 않는다.
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+  const popularTags = summarizeTags(posts).sort(byPopularity);
+  return popularTags.flatMap((tag) =>
+    paginate(postsWithTag(posts, tag.name), {
+      params: { tag: tagSlug(tag.name) },
+      props: { name: tag.name, popularTags, allPostCount: posts.length },
+      pageSize: POSTS_PER_PAGE,
+    }),
+  );
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { page, name, popularTags, allPostCount } = Astro.props as Props;
+const slug = tagSlug(name);
+const pageHref = (n: number) => (n === 1 ? `/tags/${slug}/` : `/tags/${slug}/${n}/`);
+const title = page.currentPage === 1 ? `${name} 태그` : `${name} 태그 ${page.currentPage}페이지`;
+---
+
+<BaseLayout title={title}>
+  <PostListView
+    posts={page.data}
+    total={page.total}
+    currentPage={page.currentPage}
+    lastPage={page.lastPage}
+    pageHref={pageHref}
+    popularTags={popularTags}
+    allPostCount={allPostCount}
+    current={slug}
+  >
+    <div slot="heading" class="flex flex-col gap-xs break-keep">
+      <a href="/tags/" class="flex items-center gap-xxs self-start text-label text-primary underline">
+        <span aria-hidden="true"><ArrowLeftIcon /></span>
+        모든 태그
+      </a>
+      <h1 class="flex items-center gap-sm text-heading-lg text-text md:text-heading-xl">
+        <span class="md:hidden"><TagIcon name={name} size={32} variant="brand" /></span>
+        <span class="hidden md:inline-flex"><TagIcon name={name} size={40} variant="brand" /></span>
+        <span lang="en">{name}</span>
+      </h1>
+      <p class="text-body text-muted">{name} 태그가 붙은 글이다.</p>
+    </div>
+  </PostListView>
+</BaseLayout>

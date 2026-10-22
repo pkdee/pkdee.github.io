@@ -1,0 +1,79 @@
+---
+import ArticleListItem from './ArticleListItem.astro';
+import Pagination from './Pagination.astro';
+import TagBar from './TagBar.astro';
+import TagPanel from './TagPanel.astro';
+import type { BlogPost, TagSummary } from '../../lib/posts';
+
+interface Props {
+  /** 현재 페이지의 글 */
+  posts: BlogPost[];
+  /** 이 목록의 글 전체 수 */
+  total: number;
+  currentPage: number;
+  lastPage: number;
+  /** 페이지 번호로 주소를 만든다. 1페이지 주소는 목록마다 다르다(TECH.md #6.9). */
+  pageHref: (page: number) => string;
+  /** 글 수가 많은 순으로 정렬한 전체 태그 */
+  popularTags: TagSummary[];
+  /** 공개된 글 전체 수(태그 패널의 전체 글) */
+  allPostCount: number;
+  /** 태그 패널의 현재 항목. 블로그 목록이면 'all', 태그 페이지면 그 태그의 slug */
+  current: string;
+  /** 모바일 주요 태그 줄. 태그 페이지에서는 태그 머리를 대신 둔다(DESIGN.md #5.6). */
+  showTagBar?: boolean;
+}
+
+const {
+  posts,
+  total,
+  currentPage,
+  lastPage,
+  pageHref,
+  popularTags,
+  allPostCount,
+  current,
+  showTagBar = false,
+} = Astro.props;
+
+// 블로그 목록과 태그 페이지의 공통 틀(DESIGN.md #5.6). 머리는 heading 슬롯으로 받는다.
+// 데스크톱(lg)은 목록과 태그 패널 두 단, 그보다 좁으면 한 단이다.
+---
+
+<div class="px-(--layout-gutter) pt-lg pb-xxxl md:pt-xxl">
+  <div class="mx-auto flex max-w-site flex-col gap-md md:gap-xl">
+    <slot name="heading" />
+
+    {
+      showTagBar && popularTags.length > 0 && (
+        <div class="lg:hidden">
+          <TagBar tags={popularTags} />
+        </div>
+      )
+    }
+
+    <div class="flex items-start gap-xxl">
+      <section aria-label="글 목록" class="flex min-w-0 flex-1 flex-col gap-md lg:gap-xs">
+        <p class="px-sm text-right text-body-sm text-muted">글 {total}개</p>
+        {
+          posts.length > 0 ? (
+            <ul>
+              {posts.map((post) => (
+                <li>
+                  <ArticleListItem post={post} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="px-sm py-lg text-body text-muted">아직 공개한 글이 없습니다.</p>
+          )
+        }
+        <Pagination currentPage={currentPage} lastPage={lastPage} href={pageHref} />
+      </section>
+
+      <aside class="hidden w-[280px] shrink-0 lg:block">
+        <TagPanel tags={popularTags} total={allPostCount} current={current} />
+      </aside>
+    </div>
+  </div>
+</div>

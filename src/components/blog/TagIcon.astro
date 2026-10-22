@@ -1,0 +1,39 @@
+---
+import HashIcon from '../../assets/icons/hash.svg';
+import { LOGOS } from '../../lib/tag-logos';
+import { findTag } from '../../lib/tags';
+
+interface Props {
+  name: string;
+  /** 칸 크기(px). 칩 14, 태그 패널 16, 대체 표지 28·40, 태그 페이지 머리 32·40 */
+  size: 14 | 16 | 28 | 32 | 40;
+  /** mono: 칩과 태그 패널, brand: 태그 페이지 머리와 대체 표지(DESIGN.md #8.6) */
+  variant: 'mono' | 'brand';
+}
+
+const { name, size, variant } = Astro.props;
+const logoKey = findTag(name)?.logo;
+const Logo = logoKey ? LOGOS[logoKey][variant] : undefined;
+
+const boxClass = {
+  14: 'size-3.5',
+  16: 'size-4',
+  28: 'size-7',
+  32: 'size-8',
+  40: 'size-10',
+}[size];
+// 로고 SVG는 24px 칸 기준 크기라서 칸 크기에 맞춰 같은 비율로 줄이고 가운데에 둔다.
+const scale = size / 24;
+
+// 태그 아이콘. 로고가 없으면 # 아이콘이다. 이름이 글자로 함께 있으므로 장식으로 둔다.
+---
+
+<span class:list={['inline-flex shrink-0 items-center justify-center', boxClass]} aria-hidden="true">
+  {
+    Logo ? (
+      <Logo width={Logo.width * scale} height={Logo.height * scale} />
+    ) : (
+      <HashIcon width={size} height={size} />
+    )
+  }
+</span>

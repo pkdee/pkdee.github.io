@@ -1,7 +1,8 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { SLUG_PATTERN, TAG_PATTERN } from './lib/content-patterns';
+import { SLUG_PATTERN } from './lib/content-patterns';
+import { TAG_NAMES } from './lib/tags';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
@@ -15,7 +16,15 @@ const blog = defineCollection({
         pubDate: z.coerce.date(),
         updatedDate: z.coerce.date().optional(),
         draft: z.boolean(),
-        tags: z.array(z.string().regex(TAG_PATTERN)).default([]),
+        // 태그 목록(src/lib/tags.ts)에 있는 이름만 받는다(ARCHITECTURE.md #6.4).
+        tags: z
+          .array(
+            z.enum(TAG_NAMES, {
+              error: (issue) =>
+                `태그 목록(src/lib/tags.ts)에 없는 태그 "${String(issue.input)}"이다. 목록에 먼저 추가한다.`,
+            }),
+          )
+          .default([]),
         featured: z.boolean().default(false),
         cover: image().optional(),
         coverAlt: z.string().min(1).optional(),

@@ -1,0 +1,69 @@
+---
+import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
+import ListIcon from '../../assets/icons/list-text.svg';
+import TagIcon from './TagIcon.astro';
+import type { TagSummary } from '../../lib/posts';
+import { tagSlug, tagUrl } from '../../lib/tags';
+
+interface Props {
+  /** 글 수가 많은 순으로 정렬한 태그 */
+  tags: TagSummary[];
+  /** 공개된 글 전체 수 */
+  total: number;
+  /** 지금 보고 있는 목록. 블로그 목록이면 'all', 태그 페이지면 그 태그의 slug */
+  current: string;
+}
+
+const { tags, total, current } = Astro.props;
+
+// 데스크톱 글 목록 오른쪽의 태그 패널(DESIGN.md #8.14). 체크박스 필터 없이 정적 링크만 둔다.
+const MAX_TAGS = 12;
+const items = [
+  { key: 'all', label: '전체 글', href: '/blog/', count: total },
+  ...tags.slice(0, MAX_TAGS).map((tag) => ({
+    key: tagSlug(tag.name),
+    label: tag.name,
+    href: tagUrl(tag.name),
+    count: tag.count,
+  })),
+];
+---
+
+<nav aria-label="태그" class="flex flex-col gap-sm">
+  <div class="flex items-center justify-between px-sm">
+    <p class="text-label text-muted">태그</p>
+    <a href="/tags/" class="flex items-center gap-xxs text-label text-primary underline">
+      모든 태그
+      <span aria-hidden="true"><ArrowRightIcon /></span>
+    </a>
+  </div>
+  <ul class="flex flex-col gap-0.5">
+    {
+      items.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            aria-current={item.key === current ? 'page' : undefined}
+            class="group flex h-10 items-center gap-xs rounded-sm border border-transparent px-sm text-text hover:bg-surface hover:text-primary aria-[current=page]:border-border aria-[current=page]:bg-surface aria-[current=page]:text-primary"
+          >
+            {item.key === 'all' ? (
+              <span aria-hidden="true" class="shrink-0">
+                <ListIcon />
+              </span>
+            ) : (
+              <TagIcon name={item.label} size={16} variant="mono" />
+            )}
+            <span class="min-w-0 flex-1 truncate text-label" lang={item.key === 'all' ? undefined : 'en'}>
+              {item.label}
+            </span>
+            <span class="text-body-sm text-muted group-aria-[current=page]:text-primary">
+              <span class="sr-only">글 </span>
+              {item.count}
+              <span class="sr-only">개</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

@@ -1,5 +1,6 @@
 import { collection, config, fields } from '@keystatic/core';
-import { SLUG_PATTERN, TAG_PATTERN } from './src/lib/content-patterns';
+import { SLUG_PATTERN } from './src/lib/content-patterns';
+import { TAGS } from './src/lib/tags';
 
 // 빌드 검증은 src/content.config.ts가 맡는다. 필드를 바꾸면 두 파일을 함께 고친다.
 const slugRule = {
@@ -44,16 +45,13 @@ export default config({
           description: '체크되어 있으면 사이트에 공개되지 않습니다.',
           defaultValue: true,
         }),
+        // 순서가 대체 표지에 쓰이므로(첫 로고 태그) 고른 순서를 지키는 array + select로 둔다.
         tags: fields.array(
-          fields.text({
+          fields.select({
             label: '태그',
-            validation: {
-              isRequired: true,
-              pattern: {
-                regex: TAG_PATTERN,
-                message: '영문, 숫자와 공백 . + # - 만 쓸 수 있습니다.',
-              },
-            },
+            description: '목록에 없는 태그는 src/lib/tags.ts에 먼저 추가합니다.',
+            options: TAGS.map(({ name }) => ({ label: name, value: name })),
+            defaultValue: TAGS[0].name,
           }),
           { label: '태그', itemLabel: (props) => props.value },
         ),

@@ -1,19 +1,32 @@
 ---
-import HashIcon from '../../assets/icons/hash.svg';
+import TagIcon from './TagIcon.astro';
+import { tagUrl } from '../../lib/tags';
 
 interface Props {
   name: string;
+  /** 글 수. 태그 목록 페이지(/tags/)에서만 쓴다. */
+  count?: number;
 }
 
-const { name } = Astro.props;
+const { name, count } = Astro.props;
 
-// 태그 칩(DESIGN.md #8.6). 태그 페이지와 태그 목록(로고)을 만들 때(ARCHITECTURE.md #11.1의 9단계)
-// /tags/<slug>/ 링크와 로고 Mono 아이콘으로 바꾼다. 지금은 링크가 없고 아이콘은 #이다.
+// 태그 칩(DESIGN.md #8.6). 태그 페이지로 가는 링크이고 칩에는 브랜드 색을 쓰지 않는다.
 ---
 
-<span
-  class="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface px-sm py-xxs text-label text-muted"
+<a
+  href={tagUrl(name)}
+  lang="en"
+  class="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface px-sm py-xxs text-label whitespace-nowrap text-muted hover:text-primary focus-visible:-outline-offset-2"
 >
-  <span aria-hidden="true"><HashIcon width={14} height={14} /></span>
+  <TagIcon name={name} size={14} variant="mono" />
   {name}
-</span>
+  {
+    count !== undefined && (
+      <span class="text-body-sm" lang="ko">
+        <span class="sr-only">글 </span>
+        {count}
+        <span class="sr-only">개</span>
+      </span>
+    )
+  }
+</a>

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagChip from '../../components/blog/TagChip.astro';
+import { byName, getPublishedPosts, summarizeTags } from '../../lib/posts';
+
+// 태그 목록(DESIGN.md #5.6, #8.6). 공개 글이 있는 태그만 이름순으로 보여 주고 칩에 글 수를 표시한다.
+const tags = summarizeTags(await getPublishedPosts()).sort(byName);
+---
+
+<BaseLayout title="태그">
+  <div class="px-(--layout-gutter) pt-lg pb-xxxl md:pt-xxl">
+    <div class="mx-auto flex max-w-site flex-col gap-md md:gap-xl">
+      <div class="flex flex-col gap-xs break-keep">
+        <h1 class="text-heading-lg text-text md:text-heading-xl">태그</h1>
+        <p class="text-body text-muted">태그 {tags.length}개, 이름순</p>
+      </div>
+      {
+        tags.length > 0 ? (
+          <ul class="flex flex-wrap gap-x-xs gap-y-sm">
+            {tags.map((tag) => (
+              <li>
+                <TagChip name={tag.name} count={tag.count} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-body text-muted">아직 공개한 글이 없습니다.</p>
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>

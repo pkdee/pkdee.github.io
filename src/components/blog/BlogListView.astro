@@ -1,48 +1,37 @@
 ---
-import ArticleListItem from './ArticleListItem.astro';
-import Pagination from './Pagination.astro';
+import PostListView from './PostListView.astro';
 import { SITE } from '../../lib/site';
-import type { BlogPost } from '../../lib/posts';
+import { byPopularity, summarizeTags, type BlogPost } from '../../lib/posts';
 
 interface Props {
   /** 현재 페이지의 글 */
   posts: BlogPost[];
-  /** 공개된 글 전체 수 */
-  total: number;
+  /** 공개된 글 전체(게시일 최신순) */
+  allPosts: BlogPost[];
   currentPage: number;
   lastPage: number;
 }
 
-const { posts, total, currentPage, lastPage } = Astro.props;
+const { posts, allPosts, currentPage, lastPage } = Astro.props;
 const blogPageUrl = (page: number) => (page === 1 ? '/blog/' : `/blog/page/${page}/`);
+const popularTags = summarizeTags(allPosts).sort(byPopularity);
 
-// 블로그 목록(DESIGN.md #5.6). 데스크톱 태그 패널과 모바일 주요 태그 줄은
-// 태그 목록을 만들 때(ARCHITECTURE.md #11.1의 9단계) 추가한다.
+// 블로그 목록(DESIGN.md #5.6). 모바일은 주요 태그 줄, 데스크톱은 태그 패널(전체 글이 현재 항목)을 둔다.
 ---
 
-<div class="px-(--layout-gutter) pt-lg pb-xxxl md:pt-xxl">
-  <div class="mx-auto flex max-w-site flex-col gap-md md:gap-xl">
-    <div class="flex flex-col gap-xs break-keep">
-      <h1 lang="en" class="text-heading-lg text-text md:text-heading-xl">Blog</h1>
-      <p class="text-body text-muted">{SITE.description}</p>
-    </div>
-
-    <section aria-label="글 목록" class="flex flex-col gap-xs">
-      <p class="px-sm text-right text-body-sm text-muted">글 {total}개</p>
-      {
-        posts.length > 0 ? (
-          <ul>
-            {posts.map((post) => (
-              <li>
-                <ArticleListItem post={post} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p class="px-sm py-lg text-body text-muted">아직 공개한 글이 없습니다.</p>
-        )
-      }
-      <Pagination currentPage={currentPage} lastPage={lastPage} href={blogPageUrl} />
-    </section>
+<PostListView
+  posts={posts}
+  total={allPosts.length}
+  currentPage={currentPage}
+  lastPage={lastPage}
+  pageHref={blogPageUrl}
+  popularTags={popularTags}
+  allPostCount={allPosts.length}
+  current="all"
+  showTagBar
+>
+  <div slot="heading" class="flex flex-col gap-xs break-keep">
+    <h1 lang="en" class="text-heading-lg text-text md:text-heading-xl">Blog</h1>
+    <p class="text-body text-muted">{SITE.description}</p>
   </div>
-</div>
+</PostListView>

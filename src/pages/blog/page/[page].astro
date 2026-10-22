@@ -8,19 +8,19 @@ import { getPublishedPosts, POSTS_PER_PAGE } from '../../../lib/posts';
 // 1페이지는 blog/index.astro가 맡으므로 뺀다(TECH.md #6.9).
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getPublishedPosts();
-  return paginate(posts, { pageSize: POSTS_PER_PAGE }).filter(
+  return paginate(posts, { pageSize: POSTS_PER_PAGE, props: { allPosts: posts } }).filter(
     ({ props }) => props.page.currentPage > 1,
   );
 }) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const { page } = Astro.props as Props;
+const { page, allPosts } = Astro.props as Props;
 ---
 
 <BaseLayout title={`Blog ${page.currentPage}페이지`}>
   <BlogListView
     posts={page.data}
-    total={page.total}
+    allPosts={allPosts}
     currentPage={page.currentPage}
     lastPage={page.lastPage}
   />
