@@ -1,11 +1,17 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { assertUniqueEntries } from './lib/content-integrity';
 import { SLUG_PATTERN } from './lib/content-patterns';
 import { TAG_NAMES } from './lib/tags';
 
+const BLOG_DIR = './src/content/blog';
+
+// slug, contentId가 글 사이에서 겹치면 빌드를 멈춘다(ARCHITECTURE.md #6.4).
+assertUniqueEntries(BLOG_DIR);
+
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.mdx', base: BLOG_DIR }),
   schema: ({ image }) =>
     z
       .object({
