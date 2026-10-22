@@ -1,0 +1,79 @@
+---
+import ChevronLeft from '../../assets/icons/chevron-left.svg';
+import ChevronLeftDisabled from '../../assets/icons/chevron-left-disabled.svg';
+import ChevronRight from '../../assets/icons/chevron-right.svg';
+import ChevronRightDisabled from '../../assets/icons/chevron-right-disabled.svg';
+import { pageItems } from '../../lib/pagination';
+
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  /** 페이지 번호로 주소를 만든다. 1페이지 주소는 목록마다 다르다(TECH.md #6.9). */
+  href: (page: number) => string;
+}
+
+const { currentPage, lastPage, href } = Astro.props;
+
+// 데스크톱은 최대 7칸, 모바일은 최대 5칸(DESIGN.md #8.10)
+const layouts = [
+  { items: pageItems(currentPage, lastPage, 7), class: 'hidden md:flex' },
+  { items: pageItems(currentPage, lastPage, 5), class: 'flex md:hidden' },
+];
+
+const cell = 'flex size-10 items-center justify-center rounded-sm text-label';
+const linkCell = `${cell} border border-transparent text-text hover:border-border hover:bg-surface`;
+---
+
+{
+  lastPage > 1 && (
+    <nav aria-label="페이지 이동" class="flex justify-center pt-md md:pt-xl">
+      <div class="flex items-center gap-xxs">
+        {currentPage > 1 ? (
+          <a href={href(currentPage - 1)} class={linkCell} aria-label="이전 페이지">
+            <ChevronLeft aria-hidden="true" />
+          </a>
+        ) : (
+          <span class={cell} aria-hidden="true">
+            <ChevronLeftDisabled />
+          </span>
+        )}
+
+        {layouts.map((layout) => (
+          <ol class:list={['items-center gap-xxs', layout.class]}>
+            {layout.items.map((item) =>
+              item.type === 'gap' ? (
+                <li class={`${cell} text-muted`} aria-hidden="true">
+                  …
+                </li>
+              ) : (
+                <li>
+                  {item.page === currentPage ? (
+                    <span class={`${cell} bg-primary text-on-primary`} aria-current="page">
+                      {item.page}
+                      <span class="sr-only">페이지</span>
+                    </span>
+                  ) : (
+                    <a href={href(item.page)} class={linkCell}>
+                      {item.page}
+                      <span class="sr-only">페이지</span>
+                    </a>
+                  )}
+                </li>
+              ),
+            )}
+          </ol>
+        ))}
+
+        {currentPage < lastPage ? (
+          <a href={href(currentPage + 1)} class={linkCell} aria-label="다음 페이지">
+            <ChevronRight aria-hidden="true" />
+          </a>
+        ) : (
+          <span class={cell} aria-hidden="true">
+            <ChevronRightDisabled />
+          </span>
+        )}
+      </div>
+    </nav>
+  )
+}

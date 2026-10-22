@@ -1,0 +1,25 @@
+---
+import HashIcon from '../../assets/icons/hash.svg';
+
+interface Props {
+  tags: readonly string[];
+  /** medium: 데스크톱 글 목록(태그 이름 표시), small: 모바일 글 목록(태그 이름 숨김) */
+  size: 'medium' | 'small';
+}
+
+const { tags, size } = Astro.props;
+const firstTag = tags[0];
+const iconSize = size === 'medium' ? 40 : 28;
+
+// 표지가 없는 글의 대체 표지(DESIGN.md #8.2, #8.11). 장식이므로 대체 텍스트가 없다.
+// 로고가 있는 태그는 Brand 로고와 브랜드 색 12% 배경을 쓴다. 태그 목록과 로고는 아직 없으므로
+// 지금은 로고가 없는 경우의 모양(# 아이콘, Muted Text 8% 배경)만 그린다.
+---
+
+<div
+  class="flex size-full flex-col items-center justify-center gap-xs bg-[color-mix(in_srgb,var(--color-muted)_8%,var(--color-surface))]"
+  aria-hidden="true"
+>
+  <HashIcon width={iconSize} height={iconSize} />
+  {size === 'medium' && firstTag && <span class="font-mono text-code text-muted">{firstTag}</span>}
+</div>

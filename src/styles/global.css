@@ -1,0 +1,119 @@
+@import "tailwindcss";
+/* Pretendard 공식 동적 서브셋(unicode-range 92개 조각). 쓴 글자의 조각만 받는다(DESIGN.md #4.1). */
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+
+/*
+ * 디자인 토큰. 값의 기준은 DESIGN.md 머리말(colors, typography, spacing, rounded)이다.
+ * Tailwind 기본 색과 글자 크기는 지우고 이 토큰만 유틸리티로 만든다(bg-surface, text-muted, text-body-sm 등).
+ */
+@theme {
+  --color-*: initial;
+  --color-background: #ffffff;
+  --color-surface: #f5f5f5;
+  --color-surface-raised: #ffffff;
+  --color-text: #171717;
+  --color-muted: #525252;
+  --color-border: #e5e5e5;
+  --color-border-strong: #858585;
+  --color-primary: #2c4bc7;
+  --color-primary-hover: #213a9c;
+  --color-on-primary: #ffffff;
+  --color-focus: #2c4bc7;
+  --color-code-bg: #f6f6f6;
+  --color-highlight: #dde5fb;
+  --color-callout-note: #0969da;
+  --color-callout-tip: #1a7f37;
+  --color-callout-important: #8250df;
+  --color-callout-warning: #9a6700;
+  --color-callout-caution: #cf222e;
+
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;
+  --font-mono: D2Coding, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --text-*: initial;
+  --text-heading-xl: 40px;
+  --text-heading-xl--line-height: 1.22;
+  --text-heading-xl--letter-spacing: -0.03em;
+  --text-heading-xl--font-weight: 700;
+  --text-heading-lg: 28px;
+  --text-heading-lg--line-height: 1.32;
+  --text-heading-lg--letter-spacing: -0.02em;
+  --text-heading-lg--font-weight: 700;
+  --text-heading-md: 21px;
+  --text-heading-md--line-height: 1.45;
+  --text-heading-md--letter-spacing: -0.01em;
+  --text-heading-md--font-weight: 650;
+  --text-body: 17px;
+  --text-body--line-height: 1.8;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.6;
+  /* 메뉴, 페이지 번호 같은 짧은 UI 글자. Figma Label/Default(14px, 500) */
+  --text-label: 14px;
+  --text-label--line-height: 1.6;
+  --text-label--font-weight: 500;
+  --text-code: 14px;
+  --text-code--line-height: 1.65;
+
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-xxxl: 64px;
+
+  --radius-*: initial;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --container-site: 1200px;
+  --container-article: 760px;
+}
+
+/* 라이트 모드만 지원한다. prefers-color-scheme: dark 규칙을 만들지 않는다(DESIGN.md #3.5). */
+:root {
+  color-scheme: light;
+  /* 화면 좌우 여백: 모바일 16px, 태블릿 24px, 데스크톱 32px(DESIGN.md #5.3) */
+  --layout-gutter: var(--spacing-md);
+}
+
+@media (width >= 48rem) {
+  :root {
+    --layout-gutter: var(--spacing-lg);
+  }
+}
+
+@media (width >= 64rem) {
+  :root {
+    --layout-gutter: var(--spacing-xl);
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

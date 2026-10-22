@@ -1,0 +1,106 @@
+---
+import MenuIcon from '../../assets/icons/menu.svg';
+import CloseIcon from '../../assets/icons/close.svg';
+import { NAV_ITEMS, SITE } from '../../lib/site';
+
+// 하위 경로도 그 메뉴의 현재 위치로 본다. 태그 페이지는 Blog 아래에 있다(ARCHITECTURE.md #3.1).
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  path.startsWith(href) || (href === '/blog/' && path.startsWith('/tags/'));
+
+const linkClass =
+  'flex flex-col gap-xxs px-xxs py-xs text-label text-muted hover:text-text aria-[current=page]:text-text';
+const indicatorClass = 'block h-0.5 w-full';
+---
+
+<header class="border-b border-border bg-background px-(--layout-gutter)">
+  <div class="mx-auto flex max-w-site items-center justify-between py-sm">
+    <a href="/blog/" class="text-heading-md text-text">{SITE.name}</a>
+
+    <nav aria-label="주요 메뉴" class="hidden md:block">
+      <ul class="flex items-center gap-lg">
+        {
+          NAV_ITEMS.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                lang="en"
+                class={linkClass}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+                <span
+                  class:list={[indicatorClass, isCurrent(item.href) && 'bg-primary']}
+                  aria-hidden="true"
+                />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button
+      id="site-menu-toggle"
+      type="button"
+      class="flex size-10 items-center justify-center rounded-md hover:bg-surface md:hidden"
+      aria-label="메뉴"
+      aria-expanded="false"
+      aria-controls="site-menu-panel"
+    >
+      <!-- SVG 루트의 인라인 display:block을 피하려고 감싸는 span으로 아이콘을 바꾼다. -->
+      <span data-icon="open" aria-hidden="true"><MenuIcon /></span>
+      <span data-icon="close" aria-hidden="true" class="hidden"><CloseIcon /></span>
+    </button>
+  </div>
+
+  <!-- 접힌 상태는 hidden 클래스로 둔다. JavaScript가 없으면 BaseLayout의 noscript 스타일이 펼친다. -->
+  <nav id="site-menu-panel" aria-label="주요 메뉴" class="hidden border-t border-border py-xs md:hidden">
+    <ul>
+      {
+        NAV_ITEMS.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              lang="en"
+              class={linkClass}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+              <span
+                class:list={[indicatorClass, isCurrent(item.href) && 'bg-primary']}
+                aria-hidden="true"
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('site-menu-toggle');
+  const panel = document.getElementById('site-menu-panel');
+
+  if (toggle && panel) {
+    const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴');
+      panel.classList.toggle('hidden', !open);
+      toggle.querySelector('[data-icon="open"]')?.classList.toggle('hidden', open);
+      toggle.querySelector('[data-icon="close"]')?.classList.toggle('hidden', !open);
+    };
+
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+
+    // Esc로 닫고 포커스를 버튼으로 돌려준다.
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isOpen()) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>

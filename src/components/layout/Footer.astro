@@ -1,0 +1,39 @@
+---
+import RssIcon from '../../assets/icons/rss.svg';
+import ExternalLinkIcon from '../../assets/icons/external-link.svg';
+import { SITE } from '../../lib/site';
+
+const year = new Date().getFullYear();
+const linkClass = 'flex items-center gap-xxs text-body-sm text-muted underline hover:text-text';
+---
+
+<footer class="border-t border-border bg-background px-(--layout-gutter) py-lg md:py-xl">
+  <div
+    class="mx-auto flex max-w-site flex-col gap-sm md:flex-row md:items-center md:justify-between"
+  >
+    <p class="text-body-sm text-muted">© {year} {SITE.author}</p>
+    {
+      (SITE.rssPath || SITE.githubUrl) && (
+        <ul class="flex items-center gap-lg">
+          {SITE.rssPath && (
+            <li>
+              <a href={SITE.rssPath} class={linkClass}>
+                <RssIcon aria-hidden="true" />
+                RSS
+              </a>
+            </li>
+          )}
+          {SITE.githubUrl && (
+            <li>
+              <a href={SITE.githubUrl} target="_blank" rel="noopener noreferrer" class={linkClass}>
+                GitHub
+                <span class="sr-only">(새 탭)</span>
+                <ExternalLinkIcon aria-hidden="true" />
+              </a>
+            </li>
+          )}
+        </ul>
+      )
+    }
+  </div>
+</footer>

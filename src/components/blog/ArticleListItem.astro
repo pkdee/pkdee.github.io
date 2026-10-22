@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+import CoverFallback from './CoverFallback.astro';
+import { formatDate, isoDate, postUrl, type BlogPost } from '../../lib/posts';
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, tags, cover } = post.data;
+
+// 제목 링크 하나만 포커스를 받고, ::after로 클릭 영역과 포커스 링을 항목 전체에 넓힌다(DESIGN.md #8.11).
+---
+
+<article
+  class="group relative flex items-start gap-md border-b border-dashed border-border px-sm py-md md:gap-lg md:py-lg"
+>
+  <div
+    class="h-[63px] w-[112px] shrink-0 overflow-hidden rounded-sm bg-code-bg md:h-[126px] md:w-[224px] md:rounded-md"
+  >
+    {
+      cover ? (
+        <Image
+          src={cover}
+          alt=""
+          widths={[112, 224, 448]}
+          sizes="(min-width: 48rem) 224px, 112px"
+          class="size-full object-cover"
+        />
+      ) : (
+        <>
+          <div class="size-full md:hidden">
+            <CoverFallback tags={tags} size="small" />
+          </div>
+          <div class="hidden size-full md:block">
+            <CoverFallback tags={tags} size="medium" />
+          </div>
+        </>
+      )
+    }
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col gap-xs">
+    <h2 class="line-clamp-2 text-heading-md break-keep text-text group-hover:text-primary">
+      <a
+        href={postUrl(post)}
+        class="after:absolute after:inset-0 after:rounded-sm focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-focus focus-visible:after:outline-solid"
+      >
+        {title}
+      </a>
+    </h2>
+    <p class="line-clamp-2 text-body-sm break-keep text-muted md:text-body">{description}</p>
+    <time datetime={isoDate(pubDate)} class="text-body-sm text-muted">{formatDate(pubDate)}</time>
+  </div>
+</article>
