@@ -14,15 +14,17 @@ interface Props {
 const { title, description, pubDate, updatedDate, tags } = Astro.props;
 
 // 글 머리: 제목, 설명, 날짜(게시일, 수정일), 태그 순서(DESIGN.md #8.3)
+// 제목과 게시일은 검색 결과에 쓰는 메타데이터이다. 날짜 줄과 태그는 본문 색인에서 빼지만
+// data-pagefind-ignore 기본값(index)은 메타데이터를 그대로 읽는다(TECH.md #6.10).
 ---
 
 <header class="flex flex-col gap-sm break-keep">
-  <h1 class="text-heading-xl text-text">{title}</h1>
+  <h1 class="text-heading-xl text-text" data-pagefind-meta="title">{title}</h1>
   <p class="text-body text-muted">{description}</p>
-  <p class="flex items-center gap-xs text-body-sm text-muted">
+  <p class="flex items-center gap-xs text-body-sm text-muted" data-pagefind-ignore>
     <span aria-hidden="true"><CalendarIcon /></span>
     <span>
-      <time datetime={isoDate(pubDate)}>{formatDate(pubDate)}</time> 게시
+      <time datetime={isoDate(pubDate)} data-pagefind-meta="date">{formatDate(pubDate)}</time> 게시
       {
         updatedDate && (
           <>
@@ -35,7 +37,7 @@ const { title, description, pubDate, updatedDate, tags } = Astro.props;
   </p>
   {
     tags.length > 0 && (
-      <ul class="flex flex-wrap gap-xs" aria-label="태그">
+      <ul class="flex flex-wrap gap-xs" aria-label="태그" data-pagefind-ignore>
         {tags.map((tag) => (
           <li>
             <TagChip name={tag} />

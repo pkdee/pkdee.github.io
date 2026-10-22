@@ -9,9 +9,11 @@ import { tocHeadings } from '../lib/posts';
 
 type Props = ComponentProps<typeof BaseLayout> & {
   headings: MarkdownHeading[];
+  /** 검색 색인에 넣을지. 게시물 상세만 켠다(ARCHITECTURE.md #7.3). */
+  searchable?: boolean;
 };
 
-const { headings, title, description, canonicalUrl, article, image } = Astro.props;
+const { headings, searchable = false, title, description, canonicalUrl, article, image } = Astro.props;
 const toc = tocHeadings(headings);
 
 // 본문 상세의 공통 틀(DESIGN.md #5.5, #8.3). 게시물과 프로젝트 상세가 함께 쓴다.
@@ -28,12 +30,15 @@ const toc = tocHeadings(headings);
 >
   <div class="px-(--layout-gutter) pt-lg pb-xxxl md:pt-xxl">
     <div class="mx-auto flex max-w-[calc(var(--container-article)+var(--spacing-xxl)+15rem)] justify-center gap-xxl">
-      <article class="flex max-w-article min-w-0 flex-1 flex-col gap-xl">
+      <article
+        class="flex max-w-article min-w-0 flex-1 flex-col gap-xl"
+        data-pagefind-body={searchable ? '' : undefined}
+      >
         <slot name="header" />
         <hr class="border-border" />
         {
           toc.length > 0 && (
-            <div class="lg:hidden">
+            <div class="lg:hidden" data-pagefind-ignore>
               <TableOfContents headings={toc} variant="collapsible" />
             </div>
           )

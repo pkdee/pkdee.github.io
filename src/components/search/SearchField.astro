@@ -1,0 +1,32 @@
+---
+import SearchFieldIcon from '../../assets/icons/search-field.svg';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// 검색 입력창(DESIGN.md #8.15, Figma SearchField). 포커스되면 테두리를 Focus 색 2px로 바꾼다.
+// 보이는 라벨이 없으므로 aria-label을 준다. placeholder는 스크립트가 운영체제에 맞춰 바꾼다.
+---
+
+<div
+  class:list={[
+    'flex h-10 items-center gap-xs rounded-md border border-border-strong bg-surface-raised px-sm',
+    'focus-within:border-focus focus-within:ring-1 focus-within:ring-focus focus-within:ring-inset',
+    className,
+  ]}
+>
+  <span aria-hidden="true"><SearchFieldIcon /></span>
+  <input
+    type="search"
+    aria-label="글 검색"
+    placeholder="검색"
+    autocomplete="off"
+    spellcheck="false"
+    enterkeyhint="search"
+    data-search-input
+    class="min-w-0 flex-1 bg-transparent text-body-sm text-text placeholder:text-muted focus-visible:outline-hidden"
+  />
+</div>

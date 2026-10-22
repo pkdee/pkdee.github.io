@@ -44,7 +44,8 @@ export function codeBlockFrame(): ShikiTransformer {
         /title="([^"]+)"/.exec(meta)?.[1] ??
         (isTerminal ? 'Terminal' : PLAIN_LANGS.has(lang) ? '' : lang);
 
-      const header = el('div', { className: ['code-block-header'] }, [
+      // 파일 이름과 복사 버튼 글자는 검색 색인에서 뺀다(TECH.md #6.10).
+      const header = el('div', { className: ['code-block-header'], dataPagefindIgnore: '' }, [
         el('span', { className: ['code-block-controls'], ariaHidden: 'true' }),
         el('span', { className: ['code-block-title'] }, [text(title)]),
         el('span', { className: ['code-block-actions'] }, [

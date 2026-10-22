@@ -1,0 +1,79 @@
+---
+import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
+
+interface Props {
+  /** desktop은 헤더 아래 패널, mobile은 전체 화면 검색 안의 결과이다. */
+  variant: 'desktop' | 'mobile';
+}
+
+const { variant } = Astro.props;
+const isDesktop = variant === 'desktop';
+
+// 검색 결과(DESIGN.md #8.15, Figma SearchPanel, SearchResult). 상태 문구는 결과 수를 알리고,
+// 결과 항목은 template을 복제해 스크립트가 채운다. 키 안내는 데스크톱에만 두며 장식이다.
+---
+
+<p
+  data-search-status
+  aria-live="polite"
+  class:list={['shrink-0 text-body-sm text-muted', isDesktop ? 'px-sm pt-1.5 pb-xxs' : 'px-md pt-sm pb-xxs']}
+>
+</p>
+
+<ul
+  data-search-list
+  class:list={[
+    'flex min-h-0 flex-col gap-0.5 overflow-y-auto overscroll-contain break-keep',
+    !isDesktop && 'px-xxs pb-lg',
+  ]}
+>
+</ul>
+
+<template data-search-item>
+  <li>
+    <a
+      class="group flex flex-col gap-0.5 rounded-sm px-sm py-2.5 -outline-offset-2 hover:bg-surface focus:bg-surface"
+    >
+      <span data-search-title class="truncate text-body text-text group-focus:text-primary"></span>
+      <span
+        data-search-excerpt
+        class="line-clamp-2 text-body-sm text-muted [&_mark]:bg-highlight [&_mark]:text-text"></span>
+      <span data-search-date class="text-body-sm text-muted"></span>
+    </a>
+  </li>
+</template>
+
+<div
+  data-search-empty
+  class:list={['hidden shrink-0 flex-col items-start gap-1.5 py-5 break-keep', isDesktop ? 'px-sm' : 'px-md']}
+>
+  <p class="text-body text-text">맞는 글이 없습니다.</p>
+  <p class="text-body-sm text-muted">다른 검색어로 찾거나 태그 목록에서 골라 보세요.</p>
+  <a href="/tags/" class="flex items-center gap-xxs text-label text-primary underline">
+    모든 태그
+    <span aria-hidden="true"><ArrowRightIcon /></span>
+  </a>
+</div>
+
+{
+  isDesktop && (
+    <div
+      aria-hidden="true"
+      class="flex shrink-0 items-center gap-4.5 border-t border-border px-sm pt-2.5 pb-xxs text-body-sm text-muted"
+    >
+      <span class="flex items-center gap-1.5">
+        <kbd class="rounded-[4px] border border-border bg-surface px-1.5 py-px font-sans">↑</kbd>
+        <kbd class="rounded-[4px] border border-border bg-surface px-1.5 py-px font-sans">↓</kbd>
+        이동
+      </span>
+      <span class="flex items-center gap-1.5">
+        <kbd class="rounded-[4px] border border-border bg-surface px-1.5 py-px font-sans">Enter</kbd>
+        열기
+      </span>
+      <span class="flex items-center gap-1.5">
+        <kbd class="rounded-[4px] border border-border bg-surface px-1.5 py-px font-sans">Esc</kbd>
+        닫기
+      </span>
+    </div>
+  )
+}

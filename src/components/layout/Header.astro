@@ -1,6 +1,7 @@
 ---
 import MenuIcon from '../../assets/icons/menu.svg';
 import CloseIcon from '../../assets/icons/close.svg';
+import Search from '../search/Search.astro';
 import { NAV_ITEMS, SITE } from '../../lib/site';
 
 // 하위 경로도 그 메뉴의 현재 위치로 본다. 태그 페이지는 Blog 아래에 있다(ARCHITECTURE.md #3.1).
@@ -17,41 +18,49 @@ const indicatorClass = 'block h-0.5 w-full';
   <div class="mx-auto flex max-w-site items-center justify-between py-sm">
     <a href="/blog/" class="text-heading-md text-text">{SITE.name}</a>
 
-    <nav aria-label="주요 메뉴" class="hidden md:block">
-      <ul class="flex items-center gap-lg">
-        {
-          NAV_ITEMS.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                lang="en"
-                class={linkClass}
-                aria-current={isCurrent(item.href) ? 'page' : undefined}
-              >
-                {item.label}
-                <span
-                  class:list={[indicatorClass, isCurrent(item.href) && 'bg-primary']}
-                  aria-hidden="true"
-                />
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    <!-- 데스크톱: 메뉴 오른쪽에 검색 입력창(DESIGN.md #8.1, #8.15) -->
+    <div class="hidden items-center gap-lg md:flex">
+      <nav aria-label="주요 메뉴">
+        <ul class="flex items-center gap-lg">
+          {
+            NAV_ITEMS.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  lang="en"
+                  class={linkClass}
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                  <span
+                    class:list={[indicatorClass, isCurrent(item.href) && 'bg-primary']}
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <Search variant="desktop" />
+    </div>
 
-    <button
-      id="site-menu-toggle"
-      type="button"
-      class="flex size-10 items-center justify-center rounded-md hover:bg-surface md:hidden"
-      aria-label="메뉴"
-      aria-expanded="false"
-      aria-controls="site-menu-panel"
-    >
-      <!-- SVG 루트의 인라인 display:block을 피하려고 감싸는 span으로 아이콘을 바꾼다. -->
-      <span data-icon="open" aria-hidden="true"><MenuIcon /></span>
-      <span data-icon="close" aria-hidden="true" class="hidden"><CloseIcon /></span>
-    </button>
+    <!-- 모바일: 검색 버튼과 메뉴 버튼 -->
+    <div class="flex items-center gap-xxs md:hidden">
+      <Search variant="mobile" />
+      <button
+        id="site-menu-toggle"
+        type="button"
+        class="flex size-10 items-center justify-center rounded-md hover:bg-surface"
+        aria-label="메뉴"
+        aria-expanded="false"
+        aria-controls="site-menu-panel"
+      >
+        <!-- SVG 루트의 인라인 display:block을 피하려고 감싸는 span으로 아이콘을 바꾼다. -->
+        <span data-icon="open" aria-hidden="true"><MenuIcon /></span>
+        <span data-icon="close" aria-hidden="true" class="hidden"><CloseIcon /></span>
+      </button>
+    </div>
   </div>
 
   <!-- 접힌 상태는 hidden 클래스로 둔다. JavaScript가 없으면 BaseLayout의 noscript 스타일이 펼친다. -->

@@ -39,8 +39,9 @@ const canonical = canonicalUrl ? new URL(canonicalUrl) : new URL(Astro.url.pathn
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <noscript>
-      <!-- JavaScript가 없으면 모바일 메뉴 버튼이 동작하지 않으므로 메뉴를 펼쳐 둔다. -->
+      <!-- JavaScript가 없으면 모바일 메뉴 버튼이 동작하지 않으므로 메뉴를 펼쳐 둔다. 검색은 숨긴다. -->
       <style>
+        [data-search-ui] { display: none !important; }
         @media (width < 48rem) {
           #site-menu-panel { display: block !important; }
           #site-menu-toggle { display: none !important; }
