@@ -89,6 +89,9 @@ const toc = tocHeadings(headings);
   }
 
   // 목차의 현재 섹션 표시(DESIGN.md #8.4). 화면 위쪽을 지난 마지막 제목을 현재 섹션으로 본다.
+  // 글 끝의 짧은 섹션은 그 선까지 올라가지 못하므로 두 가지를 더한다.
+  // 1. 목차를 누르거나 #제목 주소로 열면 그 제목을 고정하고, 사용자가 직접 스크롤할 때 푼다.
+  // 2. 직접 스크롤해 페이지 끝에 닿으면 마지막 제목을 현재 섹션으로 본다.
   const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
   const slugs = [...new Set(links.map((link) => link.dataset.tocLink ?? ''))];
   const headings = slugs
@@ -98,12 +101,10 @@ const toc = tocHeadings(headings);
   if (headings.length > 0) {
     const threshold = 120;
     let current: string | undefined;
+    let pinned: string | undefined;
     let ticking = false;
 
-    const update = () => {
-      ticking = false;
-      const passed = headings.filter((heading) => heading.getBoundingClientRect().top <= threshold);
-      const next = passed.at(-1)?.id;
+    const setCurrent = (next: string | undefined) => {
       if (next === current) return;
       current = next;
       for (const link of links) {
@@ -112,6 +113,49 @@ const toc = tocHeadings(headings);
       }
     };
 
+    const isAtBottom = () => {
+      const { scrollHeight, clientHeight } = document.documentElement;
+      return scrollHeight > clientHeight && window.scrollY + clientHeight >= scrollHeight - 2;
+    };
+
+    const update = () => {
+      ticking = false;
+      if (pinned) return;
+      if (isAtBottom()) {
+        setCurrent(headings.at(-1)?.id);
+        return;
+      }
+      const passed = headings.filter((heading) => heading.getBoundingClientRect().top <= threshold);
+      setCurrent(passed.at(-1)?.id);
+    };
+
+    const pin = (slug: string) => {
+      if (!slugs.includes(slug)) return;
+      pinned = slug;
+      setCurrent(slug);
+    };
+
+    // 고정은 사용자가 직접 스크롤하려는 입력에서만 푼다. 목차 링크가 일으킨 스크롤에는 풀리지 않는다.
+    // 푼 뒤의 표시는 이어지는 scroll 이벤트가 정한다.
+    const unpin = () => {
+      pinned = undefined;
+    };
+    const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ']);
+    window.addEventListener('wheel', unpin, { passive: true });
+    window.addEventListener('touchmove', unpin, { passive: true });
+    window.addEventListener('pointerdown', unpin);
+    window.addEventListener('keydown', (event) => {
+      if (SCROLL_KEYS.has(event.key)) unpin();
+    });
+
+    // pointerdown이 먼저 고정을 풀고, 이어지는 click이 누른 제목으로 다시 고정한다.
+    for (const link of links) {
+      link.addEventListener('click', () => pin(link.dataset.tocLink ?? ''));
+    }
+    // 뒤로·앞으로 가기로 주소의 #제목이 바뀌어도 그 제목을 고정한다.
+    window.addEventListener('hashchange', () => pin(decodeURIComponent(location.hash.slice(1))));
+
+    if (location.hash) pin(decodeURIComponent(location.hash.slice(1)));
     update();
     window.addEventListener(
       'scroll',
