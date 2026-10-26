@@ -121,6 +121,11 @@
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
+
+  /* 목차, 각주 같은 페이지 안 링크는 스크롤하듯 이동한다. 모션 감소 설정에서는 아래 규칙이 끈다(DESIGN.md #10.1). */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
