@@ -2,7 +2,7 @@
 import type { MarkdownHeading } from 'astro';
 import { getImage } from 'astro:assets';
 import ArticleLayout from './ArticleLayout.astro';
-import ArticleHeader from '../components/blog/ArticleHeader.astro';
+import PostHeader from '../components/blog/PostHeader.astro';
 import type { BlogPost } from '../lib/posts';
 
 interface Props {
@@ -21,7 +21,7 @@ const ogImage = cover
     }
   : undefined;
 
-// 게시물 상세(DESIGN.md #5.5, #8.3)
+// 글 상세(DESIGN.md #5.5, #8.3)
 ---
 
 <ArticleLayout
@@ -33,7 +33,7 @@ const ogImage = cover
   headings={headings}
   searchable
 >
-  <ArticleHeader
+  <PostHeader
     slot="header"
     title={title}
     description={description}

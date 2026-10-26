@@ -9,14 +9,14 @@ import { tocHeadings } from '../lib/posts';
 
 type Props = ComponentProps<typeof BaseLayout> & {
   headings: MarkdownHeading[];
-  /** 검색 색인에 넣을지. 게시물 상세만 켠다(ARCHITECTURE.md #7.3). */
+  /** 검색 색인에 넣을지. 글 상세만 켠다(ARCHITECTURE.md #7.3). */
   searchable?: boolean;
 };
 
 const { headings, searchable = false, title, description, canonicalUrl, article, image } = Astro.props;
 const toc = tocHeadings(headings);
 
-// 본문 상세의 공통 틀(DESIGN.md #5.5, #8.3). 게시물과 프로젝트 상세가 함께 쓴다.
+// 본문 상세의 공통 틀(DESIGN.md #5.5, #8.3). 글과 프로젝트 상세가 함께 쓴다.
 // 머리는 header 슬롯으로 받는다. 데스크톱(1024px 이상)은 본문 오른쪽에 목차를 두고,
 // 그보다 좁으면 본문 위에 접이식 목차를 둔다.
 ---

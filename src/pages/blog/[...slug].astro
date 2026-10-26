@@ -4,7 +4,7 @@ import { render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { getPublishedPosts } from '../../lib/posts';
 
-// 공개 게시물만 상세 주소를 만든다. 초안은 운영 빌드에서 빠진다(ARCHITECTURE.md #6.5).
+// 공개 글만 상세 주소를 만든다. 초안은 운영 빌드에서 빠진다(ARCHITECTURE.md #6.5).
 export const getStaticPaths = (async () => {
   const posts = await getPublishedPosts();
   return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));

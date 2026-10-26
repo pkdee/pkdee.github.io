@@ -1,5 +1,5 @@
 /*
- * 게시물 본문(Markdown/MDX 출력) 스타일. PostLayout의 .prose 래퍼 안에만 적용한다(TECH.md #5.3).
+ * 글과 프로젝트 본문(Markdown/MDX 출력) 스타일. ArticleLayout의 .prose 래퍼 안에만 적용한다(TECH.md #5.3).
  * 값은 global.css의 디자인 토큰 변수를 쓴다. 기준은 Figma 03 Article 시안과 DESIGN.md #8.3~#8.12이다.
  */
 

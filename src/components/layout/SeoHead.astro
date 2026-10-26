@@ -14,7 +14,7 @@ interface Props {
   description: string;
   /** 절대 URL. 운영 주소(site) 기준이다(ARCHITECTURE.md #8.3). */
   canonical: URL;
-  /** 게시물이면 Open Graph article 정보를 함께 쓴다. */
+  /** 글이면 Open Graph article 정보를 함께 쓴다. */
   article?: ArticleMeta | undefined;
   /** 대표 이미지 절대 URL. 없으면 기본 공유 이미지(/og/default.png)를 쓴다. */
   image?: { url: URL; alt: string } | undefined;
