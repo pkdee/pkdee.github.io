@@ -3,7 +3,7 @@ import type { MarkdownHeading } from 'astro';
 import { getImage } from 'astro:assets';
 import ArticleLayout from './ArticleLayout.astro';
 import PostHeader from '../components/blog/PostHeader.astro';
-import type { BlogPost } from '../lib/posts';
+import { readingMinutes, type BlogPost } from '../lib/posts';
 
 interface Props {
   post: BlogPost;
@@ -39,6 +39,7 @@ const ogImage = cover
     description={description}
     pubDate={pubDate}
     updatedDate={updatedDate}
+    readingMinutes={readingMinutes(post.body)}
     tags={tags}
   />
   <slot />

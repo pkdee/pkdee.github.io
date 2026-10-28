@@ -64,6 +64,30 @@ export function tocHeadings(headings: MarkdownHeading[]): MarkdownHeading[] {
   );
 }
 
+// 읽기 시간 기준(TECH.md #6.5). 본문은 공백을 뺀 글자 수, 코드 블록은 줄 수로 센다.
+const CHARS_PER_MINUTE = 500;
+const CODE_LINES_PER_MINUTE = 30;
+const CODE_FENCE = /^(`{3,}|~{3,})[^\n]*\n([\s\S]*?)^\1[ \t]*$/gm;
+
+/** 예상 읽기 시간(분). 올림하고 최소 1분이다. */
+export function readingMinutes(body: string | undefined): number {
+  if (!body) return 1;
+  let codeLines = 0;
+  const prose = body
+    .replace(CODE_FENCE, (_, _fence, code: string) => {
+      codeLines += code.split('\n').filter((line) => line.trim() !== '').length;
+      return '';
+    })
+    // MDX import·export 줄, HTML·컴포넌트 태그, 링크 주소, 나머지 Markdown 기호
+    .replace(/^(import|export)\s.*$/gm, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\]\([^)]*\)/g, ']')
+    .replace(/[#>*_`~|[\]\-!:]/g, '')
+    .replace(/\s/g, '');
+  const minutes = prose.length / CHARS_PER_MINUTE + codeLines / CODE_LINES_PER_MINUTE;
+  return Math.max(1, Math.ceil(minutes));
+}
+
 const dateFormatter = new Intl.DateTimeFormat('ko-KR', {
   year: 'numeric',
   month: 'long',

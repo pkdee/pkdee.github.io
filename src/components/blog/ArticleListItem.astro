@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import CoverFallback from './CoverFallback.astro';
-import { formatDate, isoDate, postUrl, type BlogPost } from '../../lib/posts';
+import { formatDate, isoDate, postUrl, readingMinutes, type BlogPost } from '../../lib/posts';
 
 interface Props {
   post: BlogPost;
@@ -50,6 +50,9 @@ const { title, description, pubDate, tags, cover } = post.data;
       </a>
     </h2>
     <p class="line-clamp-2 text-body-sm break-keep text-muted md:text-body">{description}</p>
-    <time datetime={isoDate(pubDate)} class="text-body-sm text-muted">{formatDate(pubDate)}</time>
+    <p class="text-body-sm text-muted">
+      <time datetime={isoDate(pubDate)}>{formatDate(pubDate)}</time>
+      {` · ${readingMinutes(post.body)}분 읽기`}
+    </p>
   </div>
 </article>

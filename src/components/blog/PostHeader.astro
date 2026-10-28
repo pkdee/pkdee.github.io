@@ -8,12 +8,14 @@ interface Props {
   description: string;
   pubDate: Date;
   updatedDate?: Date | undefined;
+  /** 예상 읽기 시간(분, TECH.md #6.5) */
+  readingMinutes: number;
   tags: readonly string[];
 }
 
-const { title, description, pubDate, updatedDate, tags } = Astro.props;
+const { title, description, pubDate, updatedDate, readingMinutes, tags } = Astro.props;
 
-// 글 머리: 제목, 설명, 날짜(게시일, 수정일), 태그 순서(DESIGN.md #8.3)
+// 글 머리: 제목, 설명, 날짜(게시일, 수정일, 읽기 시간), 태그 순서(DESIGN.md #8.3)
 // 제목과 게시일은 검색 결과에 쓰는 메타데이터이다. 날짜 줄과 태그는 본문 색인에서 빼지만
 // data-pagefind-ignore 기본값(index)은 메타데이터를 그대로 읽는다(TECH.md #6.10).
 ---
@@ -33,6 +35,7 @@ const { title, description, pubDate, updatedDate, tags } = Astro.props;
           </>
         )
       }
+      {` · ${readingMinutes}분 읽기`}
     </span>
   </p>
   {
