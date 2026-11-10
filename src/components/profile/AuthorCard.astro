@@ -1,0 +1,28 @@
+---
+import ArrowRightIcon from '../../assets/icons/arrow-right.svg';
+import Avatar from './Avatar.astro';
+import SocialLinks from './SocialLinks.astro';
+import { SITE } from '../../lib/site';
+
+// 글 끝의 저자 카드(DESIGN.md #8.17). 본문(각주 포함) 다음에 둔다.
+// 데스크톱(md 이상)은 사진 오른쪽에 이름, 소개, 링크를 쌓고,
+// 모바일은 사진과 이름을 한 줄에 두고 그 아래에 소개와 링크를 둔다.
+// 모든 글에 같은 내용이 들어가므로 검색 색인에서 뺀다.
+---
+
+<aside
+  aria-label="글쓴이"
+  class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-md rounded-lg border border-border bg-background p-md break-keep md:items-start md:gap-x-lg md:gap-y-xs md:p-lg"
+  data-pagefind-ignore
+>
+  <Avatar class="size-14 md:row-span-3 md:size-18" />
+  <p class="text-body font-bold text-text">{SITE.author}</p>
+  <p class="col-span-2 text-body-sm text-muted md:col-span-1">{SITE.profile.bio}</p>
+  <div class="col-span-2 flex flex-wrap items-center gap-sm md:col-span-1">
+    <SocialLinks />
+    <a href="/about/" class="ml-auto flex items-center gap-xxs text-label text-primary underline">
+      소개 보기
+      <span aria-hidden="true"><ArrowRightIcon /></span>
+    </a>
+  </div>
+</aside>

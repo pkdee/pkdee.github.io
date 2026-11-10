@@ -3,6 +3,7 @@ import type { MarkdownHeading } from 'astro';
 import { getImage } from 'astro:assets';
 import ArticleLayout from './ArticleLayout.astro';
 import PostHeader from '../components/blog/PostHeader.astro';
+import AuthorCard from '../components/profile/AuthorCard.astro';
 import { readingMinutes, type BlogPost } from '../lib/posts';
 
 interface Props {
@@ -43,4 +44,5 @@ const ogImage = cover
     tags={tags}
   />
   <slot />
+  <AuthorCard slot="footer" />
 </ArticleLayout>

@@ -3,6 +3,7 @@ import ArticleListItem from './ArticleListItem.astro';
 import Pagination from './Pagination.astro';
 import TagBar from './TagBar.astro';
 import TagPanel from './TagPanel.astro';
+import ProfileCard from '../profile/ProfileCard.astro';
 import type { BlogPost, TagSummary } from '../../lib/posts';
 
 interface Props {
@@ -22,6 +23,8 @@ interface Props {
   current: string;
   /** 모바일 주요 태그 줄. 태그 페이지에서는 태그 머리를 대신 둔다(DESIGN.md #5.6). */
   showTagBar?: boolean;
+  /** 데스크톱 사이드바 맨 위의 프로필 카드. 블로그 목록만 켠다(DESIGN.md #8.17). */
+  showProfile?: boolean;
 }
 
 const {
@@ -34,6 +37,7 @@ const {
   allPostCount,
   current,
   showTagBar = false,
+  showProfile = false,
 } = Astro.props;
 
 // 블로그 목록과 태그 페이지의 공통 틀(DESIGN.md #5.6). 머리는 heading 슬롯으로 받는다.
@@ -71,7 +75,8 @@ const {
         <Pagination currentPage={currentPage} lastPage={lastPage} href={pageHref} />
       </section>
 
-      <aside class="hidden w-[280px] shrink-0 lg:block">
+      <aside class="hidden w-[280px] shrink-0 flex-col gap-lg lg:flex">
+        {showProfile && <ProfileCard />}
         <TagPanel tags={popularTags} total={allPostCount} current={current} />
       </aside>
     </div>

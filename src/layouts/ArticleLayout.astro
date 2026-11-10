@@ -46,6 +46,7 @@ const toc = tocHeadings(headings);
         <div class="prose">
           <slot />
         </div>
+        <slot name="footer" />
       </article>
       {
         toc.length > 0 && (

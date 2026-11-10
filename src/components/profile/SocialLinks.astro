@@ -1,0 +1,46 @@
+---
+import GitHubIcon from '../../assets/icons/github.svg';
+import InstagramIcon from '../../assets/icons/instagram.svg';
+import LinkedInIcon from '../../assets/icons/linkedin.svg';
+import RssIcon from '../../assets/icons/rss.svg';
+import YouTubeIcon from '../../assets/icons/youtube.svg';
+import { SITE } from '../../lib/site';
+
+interface Props {
+  /** 끝에 RSS 링크를 붙인다. 푸터만 켠다. */
+  rss?: boolean;
+}
+
+const { rss = false } = Astro.props;
+
+// 외부 프로필 링크 묶음(DESIGN.md #8.17). 주소가 없는 서비스는 빼고, 하나도 없으면 아무것도 그리지 않는다.
+// 아이콘만 있으므로 aria-label에 서비스 이름을 넣는다. 내 프로필이므로 rel="me"를 붙인다.
+const links = [
+  { label: 'GitHub', href: SITE.social.github, Icon: GitHubIcon, me: true },
+  { label: 'Instagram', href: SITE.social.instagram, Icon: InstagramIcon, me: true },
+  { label: 'YouTube', href: SITE.social.youtube, Icon: YouTubeIcon, me: true },
+  { label: 'LinkedIn', href: SITE.social.linkedin, Icon: LinkedInIcon, me: true },
+  ...(rss ? [{ label: 'RSS', href: SITE.rssPath, Icon: RssIcon, me: false }] : []),
+].filter((link) => link.href);
+---
+
+{
+  links.length > 0 && (
+    <ul class="flex flex-wrap items-center gap-xxs">
+      {links.map(({ label, href, Icon, me }) => (
+        <li>
+          <a
+            href={href}
+            aria-label={label}
+            rel={me ? 'me' : undefined}
+            class="flex size-9 items-center justify-center rounded-md hover:bg-surface"
+          >
+            <span aria-hidden="true">
+              <Icon />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

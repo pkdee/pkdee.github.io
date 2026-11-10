@@ -1,0 +1,14 @@
+---
+import Avatar from './Avatar.astro';
+import SocialLinks from './SocialLinks.astro';
+import { SITE } from '../../lib/site';
+
+// 블로그 목록 데스크톱 사이드바의 프로필 카드(DESIGN.md #8.17). 태그 패널 위에 두고 아래 선으로 나눈다.
+---
+
+<section aria-label="글쓴이" class="flex flex-col items-start gap-sm border-b border-border px-sm pb-lg break-keep">
+  <Avatar class="size-16" />
+  <p class="text-body font-bold text-text">{SITE.author}</p>
+  <p class="text-body-sm text-muted">{SITE.profile.bio}</p>
+  <SocialLinks />
+</section>

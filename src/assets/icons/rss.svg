@@ -1,6 +1,6 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Icon/RSS">
-<path id="path" d="M2.66667 7.33333C4.25797 7.33333 5.78409 7.96547 6.90931 9.09069C8.03453 10.2159 8.66667 11.742 8.66667 13.3333M2.66667 2.66667C5.49564 2.66667 8.20875 3.79047 10.2091 5.79086C12.2095 7.79125 13.3333 10.5044 13.3333 13.3333" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" stroke="#525252"/>
-<path id="path_2" d="M4 12.6667C4 13.0349 3.70152 13.3333 3.33333 13.3333C2.96514 13.3333 2.66667 13.0349 2.66667 12.6667C2.66667 12.2985 2.96514 12 3.33333 12C3.70152 12 4 12.2985 4 12.6667Z" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" stroke="#525252"/>
+<path d="M3.33331 9.16668C5.32244 9.16668 7.23009 9.95685 8.63661 11.3634C10.0431 12.7699 10.8333 14.6776 10.8333 16.6667M3.33331 3.33334C6.86953 3.33334 10.2609 4.7381 12.7614 7.23859C15.2619 9.73907 16.6666 13.1305 16.6666 16.6667" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" stroke="#525252"/>
+<path d="M4.16665 16.6667C4.62688 16.6667 4.99998 16.2936 4.99998 15.8333C4.99998 15.3731 4.62688 15 4.16665 15C3.70641 15 3.33331 15.3731 3.33331 15.8333C3.33331 16.2936 3.70641 16.6667 4.16665 16.6667Z" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" stroke="#525252"/>
 </g>
 </svg>

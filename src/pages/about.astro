@@ -9,7 +9,8 @@ import { SITE } from '../lib/site';
 const { intro, interests, email } = SITE.about;
 // 공개 글이 없는 태그는 태그 페이지가 없으므로 링크 없는 칩으로 보여 준다.
 const taggedNames = new Set(summarizeTags(await getPublishedPosts()).map((tag) => tag.name));
-const hasContact = Boolean(SITE.githubUrl || email);
+const github = SITE.social.github;
+const hasContact = Boolean(github || email);
 const linkClass = 'flex items-center gap-xxs self-start text-body text-primary underline';
 ---
 
@@ -38,8 +39,8 @@ const linkClass = 'flex items-center gap-xxs self-start text-body text-primary u
         hasContact && (
           <section class="flex flex-col gap-md">
             <h2 class="text-heading-lg text-text">연락처</h2>
-            {SITE.githubUrl && (
-              <a href={SITE.githubUrl} class={linkClass} rel="me">
+            {github && (
+              <a href={github} class={linkClass} rel="me">
                 GitHub
                 <span aria-hidden="true">
                   <ExternalLinkIcon />
